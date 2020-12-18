@@ -9,8 +9,8 @@ import { auth, googleAuthProvider } from '../../firebase';
 import { createOrUpdateUser } from '../../functions/auth';
 
 const Login = ({ history }) => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState('dastan.maratov95@gmail.com')
+    const [password, setPassword] = useState('123456')
     const [loading, setLoading] = useState(false)
 
     const dispatch = useDispatch()
@@ -20,6 +20,14 @@ const Login = ({ history }) => {
     useEffect(() => {
         user && user.token && history.push('/')
     }, [user])
+
+    const roleBasedRedirect = (data) => {
+        if (data.role === 'admin') {
+            history.push('/admin/dashboard')
+        } else {
+            history.push('/user/history')
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -42,10 +50,11 @@ const Login = ({ history }) => {
                             token: idTokenResult.token
                         }
                     })
+                    roleBasedRedirect(data)
                 })
                 .catch(err => console.log(err))
 
-            history.push('/')
+            // history.push('/')
         } catch (error) {
             toast.error(error.message)
             setLoading(false)
@@ -73,10 +82,11 @@ const Login = ({ history }) => {
                             token: idTokenResult.token
                         }
                     })
+                    roleBasedRedirect(data)
                 })
                 .catch(err => console.log(err))
 
-            history.push('/')
+            // history.push('/')
         } catch (error) {
             toast.error(error.message)
             setLoading(false)
