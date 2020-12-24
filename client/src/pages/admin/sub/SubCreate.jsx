@@ -1,24 +1,28 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { Link } from 'react-router-dom'
 
 import AdminNav from '../../../components/nav/AdminNav'
-import { createCategory, getCategories, deleteCategory } from '../../../functions/category'
+import { getCategories } from '../../../functions/category'
 import CategoryForm from '../../../components/forms/CategoryForm'
+import { createSub, getSubs, deleteSub } from '../../../functions/sub'
 import LocalSearch from '../../../components/forms/LocalSearch'
 
-const CategoryCreate = () => {
-    const [categoryName, setCategoryName] = useState('')
+const SubCreate = () => {
+    const [subName, setSubName] = useState('')
     const [loading, setLoading] = useState(false)
     const [categories, setCategories] = useState([])
+    const [subs, setSubs] = useState([])
+    const [category, setCategory] = useState('')
     const [keyword, setKeyword] = useState('')
 
     const { user } = useSelector(state => ({ ...state }))
 
     useEffect(() => {
         fetchCategories()
+        fetchSubs()
     }, [])
 
     const fetchCategories = async () => {
@@ -26,16 +30,21 @@ const CategoryCreate = () => {
         setCategories(categories.data)
     }
 
+    const fetchSubs = async () => {
+        const subs = await getSubs()
+        setSubs(subs.data)
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true)
 
         try {
-            const response = await createCategory(user.token, categoryName)
+            const response = await createSub(user.token, subName, category)
             toast.success(`${response.data.name} is created`)
             setLoading(false)
-            setCategoryName('')
-            fetchCategories()
+            setSubName('')
+            fetchSubs()
         } catch (err) {
             toast.error(err.message)
             setLoading(false)
@@ -45,11 +54,11 @@ const CategoryCreate = () => {
     const handleDelete = async (slug) => {
         if (window.confirm(`Are you sure you want to delete "${slug}"?`)) {
             setLoading(true)
-            deleteCategory(user.token, slug)
+            deleteSub(user.token, slug)
                 .then(res => {
                     setLoading(false)
                     toast.success(`${slug} is deleted`)
-                    fetchCategories()
+                    fetchSubs()
                 })
                 .catch(err => {
                     setLoading(false)
@@ -58,7 +67,7 @@ const CategoryCreate = () => {
         }
     }
 
-    const searched = (keyword) => (category) => category.name.toLowerCase().includes(keyword)
+    const searched = (keyword) => (sub) => sub.name.toLowerCase().includes(keyword)
 
     return (
         <div className="container-fluid">
@@ -69,27 +78,40 @@ const CategoryCreate = () => {
                 <div className="col">
                     {loading
                         ? <h4 className="text-danger">Loading...</h4>
-                        : <h4>Create category</h4>
+                        : <h4>Create sub category</h4>
                     }
+                    <div className="form-group">
+                        <label>Parent category</label>
+                        <select
+                            name="category"
+                            className="form-control"
+                            onChange={e => setCategory(e.target.value)}
+                        >
+                            <option>Please select</option>
+                            {categories.length > 0 && categories.map(c => (
+                                <option key={c._id} value={c._id}>{c.name}</option>
+                            ))}
+                        </select>
+                    </div>
                     <CategoryForm
                         handleSubmit={handleSubmit}
-                        categoryName={categoryName}
-                        setCategoryName={setCategoryName}
+                        categoryName={subName}
+                        setCategoryName={setSubName}
                     />
                     <LocalSearch
                         keyword={keyword}
                         setKeyword={setKeyword}
                     />
                     <div className="my-3">
-                        {categories && categories
+                        {subs
                             .filter(searched(keyword))
-                            .map(category => (
-                                <div className="alert alert-secondary" key={category._id}>
-                                    {category.name}
-                                    <span className="btn btn-sm float-right" onClick={() => handleDelete(category.slug)}>
+                            .map(sub => (
+                                <div className="alert alert-secondary" key={sub._id}>
+                                    {sub.name}
+                                    <span className="btn btn-sm float-right" onClick={() => handleDelete(sub.slug)}>
                                         <DeleteOutlined className="text-danger" />
                                     </span>
-                                    <Link to={`/admin/category/${category.slug}`}>
+                                    <Link to={`/admin/sub/${sub.slug}`}>
                                         <span className="btn btn-sm float-right">
                                             <EditOutlined className="text-primary" />
                                         </span>
@@ -104,4 +126,4 @@ const CategoryCreate = () => {
     )
 }
 
-export default CategoryCreate
+export default SubCreate
