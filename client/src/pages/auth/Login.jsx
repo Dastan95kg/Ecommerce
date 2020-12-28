@@ -40,6 +40,7 @@ const Login = ({ history }) => {
             createOrUpdateUser(idTokenResult.token)
                 .then(res => {
                     const { data } = res
+                    setLoading(false)
                     dispatch({
                         type: 'LOGGED_IN_USER',
                         payload: {
@@ -52,7 +53,11 @@ const Login = ({ history }) => {
                     })
                     roleBasedRedirect(data)
                 })
-                .catch(err => console.log(err))
+                .catch(err => {
+                    setLoading(false)
+                    toast.error(err.message)
+                    console.log(err)
+                })
 
             // history.push('/')
         } catch (error) {
@@ -72,6 +77,7 @@ const Login = ({ history }) => {
             createOrUpdateUser(idTokenResult.token)
                 .then(res => {
                     const { data } = res
+                    setLoading(false)
                     dispatch({
                         type: 'LOGGED_IN_USER',
                         payload: {
@@ -84,7 +90,11 @@ const Login = ({ history }) => {
                     })
                     roleBasedRedirect(data)
                 })
-                .catch(err => console.log(err))
+                .catch(err => {
+                    setLoading(false)
+                    toast.error(err.message)
+                    console.log(err)
+                })
 
             // history.push('/')
         } catch (error) {

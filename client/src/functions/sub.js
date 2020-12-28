@@ -19,10 +19,10 @@ export const createSub = async (authtoken, sub, parent) =>
         { headers: { authtoken } }
     )
 
-export const updateSub = async (authtoken, sub, slug) => {
+export const updateSub = async (authtoken, parent, sub, slug) => {
     return await axios.put(
         `${process.env.REACT_APP_API}/sub/${slug}`,
-        { name: sub },
+        { name: sub, parent },
         { headers: { authtoken } }
     )
 }
