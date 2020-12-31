@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { LoadingOutlined } from '@ant-design/icons'
 
 import AdminNav from '../../../components/nav/AdminNav'
 import { createProduct } from '../../../functions/product'
 import ProductCreateForm from '../../../components/forms/ProductCreateForm'
 import { getCategories, getCategorySubs } from '../../../functions/category'
+import FileUpload from '../../../components/forms/FileUpload'
 
 const initialState = {
     title: '',
@@ -78,10 +80,19 @@ const ProductCreate = () => {
                 </div>
                 <div className="col-md-10">
                     {loading
-                        ? <h4 className="text-danger">Loading...</h4>
+                        ? <LoadingOutlined className="text-danger h1 d-block mx-auto my-2" />
                         : <h4>Product create</h4>
                     }
                     <hr />
+
+                    <div className="p-3">
+                        <FileUpload
+                            values={values}
+                            setValues={setValues}
+                            setLoading={setLoading}
+                        />
+                    </div>
+
                     <ProductCreateForm
                         handleChange={handleChange}
                         handleSubmit={handleSubmit}
