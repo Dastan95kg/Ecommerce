@@ -22,3 +22,9 @@ export const uploadImages = async (authtoken, uri) =>
 
 export const getProducts = async (count) =>
     await axios.get(`${process.env.REACT_APP_API}/products/${count}`)
+
+export const removeProduct = async (authtoken, slug) =>
+    await axios.delete(
+        `${process.env.REACT_APP_API}/product/${slug}`,
+        { headers: { authtoken } }
+    )
