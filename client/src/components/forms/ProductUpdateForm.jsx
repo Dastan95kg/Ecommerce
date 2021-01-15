@@ -3,7 +3,18 @@ import { Select } from 'antd'
 
 const { Option } = Select
 
-const ProductUpdateForm = ({ handleChange, handleSubmit, values, setValues, categories }) => {
+const ProductUpdateForm = ({
+    handleChange,
+    handleSubmit,
+    values,
+    setValues,
+    categories,
+    subsIds,
+    setSubsIds,
+    subOptions,
+    handleCategoryChange,
+    selectedCategory
+}) => {
     const {
         title,
         description,
@@ -20,7 +31,7 @@ const ProductUpdateForm = ({ handleChange, handleSubmit, values, setValues, cate
     } = values
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="mb-5">
             <div className="form-group">
                 <label>Title</label>
                 <input className="form-control" type="text" value={title} name="title" onChange={handleChange} />
@@ -63,8 +74,12 @@ const ProductUpdateForm = ({ handleChange, handleSubmit, values, setValues, cate
             </div>
             <div className="form-group">
                 <label>Category</label>
-                <select name="category" className="form-control">
-                    <option value="">{category ? category.name : 'Please select'}</option>
+                <select
+                    name="category"
+                    className="form-control"
+                    value={selectedCategory ? selectedCategory : category._id}
+                    onChange={handleCategoryChange}
+                >
                     {categories.length > 0 &&
                         categories.map(c => (
                             <option key={c._id} value={c._id}>{c.name}</option>
@@ -72,22 +87,20 @@ const ProductUpdateForm = ({ handleChange, handleSubmit, values, setValues, cate
                 </select>
             </div>
 
-            {/* {showSubs && (
-                <div className="form-group">
-                    <label>Sub Categories</label>
-                    <Select
-                        mode="multiple"
-                        style={{ width: '100%' }}
-                        value={subs}
-                        placeholder="Please select"
-                        onChange={value => setValues({ ...values, subs: value })}
-                    >
-                        {subOptions.length && subOptions.map(s => (
-                            <Option key={s._id} value={s._id}>{s.name}</Option>
-                        ))}
-                    </Select>
-                </div>
-            )} */}
+            <div className="form-group">
+                <label>Sub Categories</label>
+                <Select
+                    mode="multiple"
+                    style={{ width: '100%' }}
+                    value={subsIds}
+                    placeholder="Please select"
+                    onChange={value => setSubsIds(value)}
+                >
+                    {subOptions.length && subOptions.map(s => (
+                        <Option key={s._id} value={s._id}>{s.name}</Option>
+                    ))}
+                </Select>
+            </div>
 
             <button type="submit" className="btn btn-outline-info">Save</button>
         </form>

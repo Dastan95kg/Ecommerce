@@ -28,7 +28,11 @@ const initialState = {
 const ProductUpdate = ({ match }) => {
     const [values, setValues] = useState(initialState)
     const [categories, setCategories] = useState([])
-    console.log(values);
+    const [subsIds, setSubsIds] = useState([])
+    const [subOptions, setSubOptions] = useState([])
+    const [selectedCategory, setSelectedCategory] = useState('')
+
+    console.log(subsIds);
 
     const { user } = useSelector(state => ({ ...state }))
 
@@ -39,7 +43,17 @@ const ProductUpdate = ({ match }) => {
 
     const loadProduct = () => {
         getProduct(match.params.slug)
-            .then(resp => setValues({ ...values, ...resp.data }))
+            .then(resp => {
+                // 1. load single product
+                setValues({ ...values, ...resp.data })
+                // 2. load single product category subs
+                getCategorySubs(resp.data.category._id)
+                    .then(res => setSubOptions(res.data))
+                // 3. prepare array of sub ids to show as default sub
+                const arr = []
+                resp.data.subs.map(sub => arr.push(sub._id))
+                setSubsIds((prev) => arr)
+            })
             .catch(err => console.log(err))
     }
 
@@ -57,6 +71,21 @@ const ProductUpdate = ({ match }) => {
         e.preventDefault()
     }
 
+    const handleCategoryChange = (e) => {
+        e.preventDefault()
+        setSelectedCategory(e.target.value)
+        getCategorySubs(e.target.value)
+            .then(resp => setSubOptions(resp.data))
+
+        // clear subcategories array of ids
+        setSubsIds([])
+        // if user clicks back to the original category
+        // show its sub categories in default
+        if (values.category._id === e.target.value) {
+            loadProduct()
+        }
+    }
+
     return (
         <div className="container-fluid">
             <div className="row">
@@ -66,7 +95,6 @@ const ProductUpdate = ({ match }) => {
                 <div className="col-md-10">
                     <h4>Product update</h4>
                     <hr />
-                    {JSON.stringify(values.categories)}
 
                     <div className="p-3">
                         <FileUpload
@@ -81,6 +109,11 @@ const ProductUpdate = ({ match }) => {
                         handleChange={handleChange}
                         handleSubmit={handleSubmit}
                         categories={categories}
+                        subsIds={subsIds}
+                        setSubsIds={setSubsIds}
+                        subOptions={subOptions}
+                        handleCategoryChange={handleCategoryChange}
+                        selectedCategory={selectedCategory}
                     />
                 </div>
             </div>
