@@ -46,7 +46,7 @@ const ProductUpdateForm = ({
             </div>
             <div className="form-group">
                 <label>Shipping</label>
-                <select name="shipping" className="form-control" onChange={handleChange}>
+                <select name="shipping" className="form-control" value={shipping} onChange={handleChange}>
                     <option>Please select</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>

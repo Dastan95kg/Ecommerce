@@ -4,7 +4,7 @@ import { toast } from 'react-toastify'
 import { LoadingOutlined } from '@ant-design/icons'
 
 import AdminNav from '../../../components/nav/AdminNav'
-import { createProduct, getProduct } from '../../../functions/product'
+import { createProduct, getProduct, updateProduct } from '../../../functions/product'
 import ProductUpdateForm from '../../../components/forms/ProductUpdateForm'
 import { getCategories, getCategorySubs } from '../../../functions/category'
 import FileUpload from '../../../components/forms/FileUpload'
@@ -25,14 +25,13 @@ const initialState = {
     brand: ''
 }
 
-const ProductUpdate = ({ match }) => {
+const ProductUpdate = ({ match, history }) => {
     const [values, setValues] = useState(initialState)
     const [categories, setCategories] = useState([])
     const [subsIds, setSubsIds] = useState([])
     const [subOptions, setSubOptions] = useState([])
     const [selectedCategory, setSelectedCategory] = useState('')
-
-    console.log(subsIds);
+    const [loading, setLoading] = useState(false)
 
     const { user } = useSelector(state => ({ ...state }))
 
@@ -69,6 +68,23 @@ const ProductUpdate = ({ match }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setLoading(true)
+
+        values.subs = subsIds
+        values.category = selectedCategory ? selectedCategory : values.category
+
+        updateProduct(match.params.slug, values, user.token)
+            .then(response => {
+                debugger
+                setLoading(false)
+                toast.success(`"${response.data.title}" is updated`)
+                history.push('/admin/products')
+            })
+            .catch(err => {
+                console.log(err);
+                setLoading(false)
+                toast.error(err.response.data.err)
+            })
     }
 
     const handleCategoryChange = (e) => {
@@ -93,13 +109,17 @@ const ProductUpdate = ({ match }) => {
                     <AdminNav />
                 </div>
                 <div className="col-md-10">
-                    <h4>Product update</h4>
+                    {loading
+                        ? <LoadingOutlined className="text-danger h1 d-block mx-auto my-2" />
+                        : <h4>Product update</h4>
+                    }
                     <hr />
 
                     <div className="p-3">
                         <FileUpload
                             values={values}
                             setValues={setValues}
+                            setLoading={setLoading}
                         />
                     </div>
 
