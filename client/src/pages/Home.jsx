@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import Jumbotron from '../components/cards/Jumbotron';
 import ProductCard from '../components/cards/ProductCard';
 import { getProducts } from '../functions/product'
 
@@ -22,10 +23,9 @@ const Home = () => {
 
     return (
         <>
-            <div className="jumbotron">
-                {loading ? <div>Loading...</div> : <div>All Products</div>}
+            <div className="jumbotron text-danger text-center font-weight-bold h1">
+                <Jumbotron text={['Latest Products', 'New Arrivals', 'Best Sellers']} />
             </div>
-
             <div className="container">
                 <div className="row">
                     {products.map(product => (
