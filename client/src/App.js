@@ -9,7 +9,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import RegisterComplete from './pages/auth/RegisterComplete';
 import ForgotPassword from './pages/auth/ForgotPassword';
-import Home from './pages/Home';
+import Home from './pages/home/Home';
 import { auth } from './firebase';
 import { currentUser } from './functions/auth';
 import History from './pages/user/History';

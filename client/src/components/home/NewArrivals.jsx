@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 
-import Jumbotron from '../components/cards/Jumbotron';
-import ProductCard from '../components/cards/ProductCard';
-import { getProducts } from '../functions/product'
+import LoadingCard from '../../components/cards/LoadingCard';
+import ProductCard from '../../components/cards/ProductCard';
+import { getHomeProducts } from '../../functions/product'
 
-const Home = () => {
+const NewArrivals = () => {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(false)
 
@@ -14,7 +14,7 @@ const Home = () => {
 
     const loadAllProducts = () => {
         setLoading(true)
-        getProducts(3)
+        getHomeProducts('createdAt', 'desc', 3)
             .then(res => {
                 setProducts(res.data)
                 setLoading(false)
@@ -22,11 +22,8 @@ const Home = () => {
     }
 
     return (
-        <>
-            <div className="jumbotron text-danger text-center font-weight-bold h1">
-                <Jumbotron text={['Latest Products', 'New Arrivals', 'Best Sellers']} />
-            </div>
-            <div className="container">
+        <div className="container">
+            {loading ? <LoadingCard count={3} /> : (
                 <div className="row">
                     {products.map(product => (
                         <div
@@ -37,9 +34,9 @@ const Home = () => {
                         </div>
                     ))}
                 </div>
-            </div>
-        </>
+            )}
+        </div>
     )
 }
 
-export default Home;
+export default NewArrivals
