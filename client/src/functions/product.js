@@ -38,8 +38,11 @@ export const updateProduct = async (slug, product, authtoken) =>
         product,
         { headers: { authtoken } })
 
-export const getHomeProducts = async (sort, order, limit) =>
+export const getHomeProducts = async (sort, order, page) =>
     await axios.post(
         `${process.env.REACT_APP_API}/products`,
-        { sort, order, limit }
+        { sort, order, page }
     )
+
+export const getProductsCount = async () =>
+    await axios.get(`${process.env.REACT_APP_API}/products/total`)

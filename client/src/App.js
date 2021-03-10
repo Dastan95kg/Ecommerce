@@ -25,6 +25,7 @@ import SubUpdate from './pages/admin/sub/SubUpdate';
 import ProductCreate from './pages/admin/product/ProductCreate';
 import AllProducts from './pages/admin/product/AllProducts';
 import ProductUpdate from './pages/admin/product/ProductUpdate';
+import Product from './pages/home/Product';
 
 const App = () => {
   const dispatch = useDispatch()
@@ -65,6 +66,7 @@ const App = () => {
         <Route exact path="/register" component={Register} />
         <Route exact path="/register/complete" component={RegisterComplete} />
         <Route exact path="/forgot/password" component={ForgotPassword} />
+        <Route exact path="/product/:slug" component={Product} />
         <UserRoute exact path="/user/history" component={History} />
         <UserRoute exact path="/user/password" component={Password} />
         <UserRoute exact path="/user/wishlist" component={Wishlist} />
