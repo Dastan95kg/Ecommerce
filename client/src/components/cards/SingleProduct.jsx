@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 import { Carousel } from 'react-responsive-carousel'
+import StarRatings from 'react-star-ratings';
 
 import imgPlaceholder from '../../images/placeholder.png'
 import ProductListItems from './ProductListItems'
@@ -11,7 +12,7 @@ import ProductListItems from './ProductListItems'
 const { TabPane } = Tabs
 
 const SingleProduct = ({ product }) => {
-    const { title, images, description } = product
+    const { title, images, description, _id } = product
 
     return (
         <>
@@ -38,6 +39,16 @@ const SingleProduct = ({ product }) => {
             </div>
             <div className="col-md-5">
                 <h1 className="bg-info p-3">{title}</h1>
+                <div className="mb-3">
+                    <StarRatings
+                        rating={3}
+                        starRatedColor="red"
+                        changeRating={(newRating, name) => console.log('newRating: ', newRating, 'name: ', name)}
+                        numberOfStars={5}
+                        name={_id}
+                        isSelectable={true}
+                    />
+                </div>
                 <Card
                     actions={[
                         <>
