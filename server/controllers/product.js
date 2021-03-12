@@ -68,24 +68,6 @@ exports.update = async (req, res) => {
     }
 }
 
-// Without pagination
-exports.list = async (req, res) => {
-    try {
-        // createdAt/updatedAt, desc/asc, 3
-        const { sort, order, limit } = req.body
-        const products = await Product.find({})
-            .populate('category')
-            .populate('subs')
-            .sort([[sort, order]])
-            .limit(limit)
-            .exec()
-
-        res.json(products)
-    } catch (err) {
-        console.log(err)
-    }
-}
-
 // With pagination
 exports.list = async (req, res) => {
     try {
@@ -141,4 +123,20 @@ exports.productStar = async (req, res) => {
         console.log('ratingUpdated', ratingUpdated);
         res.json(ratingUpdated)
     }
+}
+
+exports.listRelated = async (req, res) => {
+    const product = await Product.findById(req.params.productId).exec()
+
+    const related = await Product.find({
+        _id: { $ne: product._id },
+        category: product.category
+    })
+        .limit(3)
+        .populate("category")
+        .populate("subs")
+        .populate("postedBy")
+        .exec()
+
+    res.json(related)
 }

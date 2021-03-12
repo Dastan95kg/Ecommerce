@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { getProduct, productStar } from '../../functions/product'
+import { getProduct, productRelated, productStar } from '../../functions/product'
 import SingleProduct from '../../components/cards/SingleProduct'
+import ProductCard from '../../components/cards/ProductCard'
 
 const Product = ({ match }) => {
     const [product, setProduct] = useState('')
     const [star, setStar] = useState(0)
+    const [related, setRelated] = useState([])
+
+    console.log(related);
+
     const { user } = useSelector(state => ({ ...state }))
     const { slug } = match.params
-
-    console.log('star', star);
-    console.log('product', product);
 
     useEffect(() => {
         loadProduct()
@@ -26,7 +28,11 @@ const Product = ({ match }) => {
 
     const loadProduct = () => {
         getProduct(match.params.slug)
-            .then(res => setProduct(res.data))
+            .then(res => {
+                setProduct(res.data)
+                productRelated(res.data._id)
+                    .then(res => setRelated(res.data))
+            })
     }
 
     const onStarClick = (newRating, name) => {
@@ -53,6 +59,18 @@ const Product = ({ match }) => {
                     <hr />
                     <h4>Related products</h4>
                     <hr />
+                    <div className="row">
+                        {related.length ? related.map(product => (
+                            <div
+                                className="col-md-4"
+                                key={product._id}
+                            >
+                                <ProductCard product={product} />
+                            </div>
+                        )) : (
+                            <div className="text-center col">No Products Found</div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

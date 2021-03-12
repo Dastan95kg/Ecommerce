@@ -52,3 +52,6 @@ export const productStar = async (productId, star, authtoken) =>
         `${process.env.REACT_APP_API}/product/star/${productId}`,
         { star },
         { headers: { authtoken } })
+
+export const productRelated = async (productId) =>
+    await axios.get(`${process.env.REACT_APP_API}/product/related/${productId}`)
