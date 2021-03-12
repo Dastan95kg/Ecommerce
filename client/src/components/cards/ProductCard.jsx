@@ -5,6 +5,7 @@ import { EyeOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
 
 import imgPlaceholder from '../../images/placeholder.png'
+import showAverage from '../../functions/rating'
 
 const { Meta } = Card
 
@@ -28,6 +29,9 @@ const ProductCard = ({ product }) => {
 
     return (
         <Styled>
+            <div className="text-center mb-2">
+                {product && product.ratings && product.ratings.length ? showAverage(product) : 'No ratings yet'}
+            </div>
             <Card
                 style={{ objectFit: "cover" }}
                 cover={<img src={images.length ? images[0].url : imgPlaceholder} />}
