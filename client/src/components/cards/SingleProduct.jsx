@@ -8,6 +8,7 @@ import StarRatings from 'react-star-ratings';
 
 import imgPlaceholder from '../../images/placeholder.png'
 import ProductListItems from './ProductListItems'
+import RatingModal from '../modal/RatingModal'
 
 const { TabPane } = Tabs
 
@@ -57,6 +58,16 @@ const SingleProduct = ({ product }) => {
                         <Link to="/">
                             <HeartOutlined className="text-info" /> Add to Wishlist
                         </Link>,
+                        <RatingModal>
+                            <StarRatings
+                                rating={3}
+                                starRatedColor="red"
+                                changeRating={(newRating, name) => console.log('newRating: ', newRating, 'name: ', name)}
+                                numberOfStars={5}
+                                name={_id}
+                                isSelectable={true}
+                            />
+                        </RatingModal>
                     ]}
                 >
                     <ProductListItems product={product} />

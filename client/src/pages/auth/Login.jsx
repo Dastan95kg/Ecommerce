@@ -18,14 +18,25 @@ const Login = ({ history }) => {
     const { user } = useSelector(state => state)
 
     useEffect(() => {
-        user && user.token && history.push('/')
+        const intended = history.location.state
+        if (intended) {
+            return
+        } else {
+            user && user.token && history.push('/')
+        }
     }, [user])
 
     const roleBasedRedirect = (data) => {
-        if (data.role === 'admin') {
-            history.push('/admin/dashboard')
+        // intended page
+        const intended = history.location.state
+        if (intended) {
+            history.push(intended.from)
         } else {
-            history.push('/user/history')
+            if (data.role === 'admin') {
+                history.push('/admin/dashboard')
+            } else {
+                history.push('/user/history')
+            }
         }
     }
 
@@ -164,8 +175,8 @@ const Login = ({ history }) => {
                     {loading ? (
                         <h4 className="text-danger">Loading...</h4>
                     ) : (
-                            <h4>Login</h4>
-                        )}
+                        <h4>Login</h4>
+                    )}
                     {loginForm()}
                 </div>
             </div>
