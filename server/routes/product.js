@@ -6,7 +6,7 @@ const { authCheck, adminCheck } = require('../middlewares/auth')
 
 // controller
 const {
-    create, listAll, remove, read, update, list, productsCount, productStar, listRelated
+    create, listAll, remove, read, update, list, productsCount, productStar, listRelated, searchFilters
 } = require('../controllers/product')
 
 // routes
@@ -25,5 +25,8 @@ router.get('/product/related/:productId', listRelated)
 
 // rating
 router.put('/product/star/:productId', authCheck, productStar)
+
+// search
+router.post('/search/filters', searchFilters)
 
 module.exports = router
