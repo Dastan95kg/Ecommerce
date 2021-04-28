@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Menu } from 'antd';
 import {
     WindowsOutlined, SettingOutlined, UserOutlined,
-    UserAddOutlined, LogoutOutlined
+    UserAddOutlined, LogoutOutlined, ShoppingOutlined
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import firebase from 'firebase';
+import Search from '../forms/Search';
+import Shop from '../../pages/shop/Shop';
 
 const Header = () => {
     const [current, setCurrent] = useState("home")
@@ -39,6 +41,10 @@ const Header = () => {
                 <Link to="/">Home</Link>
             </Item>
 
+            <Item key="shop" icon={<ShoppingOutlined />}>
+                <Link to="/shop">Shop</Link>
+            </Item>
+
             {!user.token && (
                 <>
                     <Item key="register" icon={<UserAddOutlined />} className="float-right">
@@ -67,6 +73,8 @@ const Header = () => {
                     <Item icon={<LogoutOutlined />} onClick={logout}>Log out</Item>
                 </SubMenu>
             )}
+
+            <Search />
         </Menu>
     )
 }
