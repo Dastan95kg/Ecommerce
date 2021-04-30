@@ -3,7 +3,7 @@ import { Pagination } from 'antd'
 
 import LoadingCard from '../../components/cards/LoadingCard';
 import ProductCard from '../../components/cards/ProductCard';
-import { getHomeProducts, getProductsCount } from '../../functions/product'
+import { getHomeProducts, getProductsTotal } from '../../functions/product'
 
 const NewArrivals = () => {
     const [products, setProducts] = useState([])
@@ -16,7 +16,7 @@ const NewArrivals = () => {
     }, [page])
 
     useEffect(() => {
-        getProductsCount().then(res => setTotalProducts(res.data))
+        getProductsTotal().then(res => setTotalProducts(res.data))
     }, [])
 
     const loadAllProducts = () => {

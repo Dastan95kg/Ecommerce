@@ -25,7 +25,7 @@ const Styled = styled.div`
 `
 
 const ProductCard = ({ product }) => {
-    const { title, description, images, slug } = product
+    const { title, description, images, slug, price } = product
 
     return (
         <Styled>
@@ -50,7 +50,12 @@ const ProductCard = ({ product }) => {
                 ]}
             >
                 <Meta
-                    title={title}
+                    title={
+                        <>
+                            <div>{title}</div>
+                            <div className="text-danger">$ {price}</div>
+                        </>
+                    }
                     description={`${description && description.substring(0, 40)}${(description.length > 40) ? '...' : ''}`}
                 />
             </Card>

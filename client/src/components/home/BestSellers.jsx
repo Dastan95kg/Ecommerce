@@ -3,7 +3,7 @@ import { Pagination } from 'antd'
 
 import LoadingCard from '../../components/cards/LoadingCard';
 import ProductCard from '../../components/cards/ProductCard';
-import { getHomeProducts, getProductsCount } from '../../functions/product'
+import { getHomeProducts, getProductsTotal } from '../../functions/product'
 
 const BestSellers = () => {
     const [products, setProducts] = useState([])
@@ -16,16 +16,14 @@ const BestSellers = () => {
     }, [page])
 
     useEffect(() => {
-        getProductsCount().then(res => setTotalProducts(res.data))
+        getProductsTotal().then(res => setTotalProducts(res.data))
     }, [])
 
     const loadAllProducts = () => {
         setLoading(true)
         getHomeProducts('sold', 'desc', page)
-            .then(res => {
-                setProducts(res.data)
-                setLoading(false)
-            })
+            .then(res => setProducts(res.data))
+            .finally(() => setLoading(false))
     }
 
     return (

@@ -47,6 +47,9 @@ export const getHomeProducts = async (sort, order, page) =>
 export const getProductsCount = async (number) =>
     await axios.get(`${process.env.REACT_APP_API}/products/${number}`)
 
+export const getProductsTotal = async () =>
+    await axios.get(`${process.env.REACT_APP_API}/products/total`)
+
 export const productStar = async (productId, star, authtoken) =>
     await axios.put(
         `${process.env.REACT_APP_API}/product/star/${productId}`,
@@ -55,3 +58,6 @@ export const productStar = async (productId, star, authtoken) =>
 
 export const productRelated = async (productId) =>
     await axios.get(`${process.env.REACT_APP_API}/product/related/${productId}`)
+
+export const fetchProductsByFilter = async (obj) =>
+    await axios.post(`${process.env.REACT_APP_API}/search/filters`, obj)
