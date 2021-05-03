@@ -28,6 +28,7 @@ const Login = ({ history }) => {
 
     const roleBasedRedirect = (data) => {
         // intended page
+        debugger
         const intended = history.location.state
         if (intended) {
             history.push(intended.from)

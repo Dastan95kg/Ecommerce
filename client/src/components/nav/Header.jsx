@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
-import { Menu } from 'antd';
+import { Badge, Menu } from 'antd';
 import {
     WindowsOutlined, SettingOutlined, UserOutlined,
-    UserAddOutlined, LogoutOutlined, ShoppingOutlined
+    UserAddOutlined, LogoutOutlined, ShoppingOutlined, ShoppingCartOutlined
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import firebase from 'firebase';
+
 import Search from '../forms/Search';
-import Shop from '../../pages/shop/Shop';
 
 const Header = () => {
     const [current, setCurrent] = useState("home")
 
-    const user = useSelector(state => state.user)
+    const { user, cart } = useSelector(state => state)
 
     const dispatch = useDispatch()
-
     const history = useHistory()
 
     const handleClick = (e) => {
@@ -43,6 +42,12 @@ const Header = () => {
 
             <Item key="shop" icon={<ShoppingOutlined />}>
                 <Link to="/shop">Shop</Link>
+            </Item>
+
+            <Item key="cart" icon={<ShoppingCartOutlined />}>
+                <Link to="/cart">
+                    <Badge count={cart.length} offset={[9, 0]}>Cart</Badge>
+                </Link>
             </Item>
 
             {!user.token && (

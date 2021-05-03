@@ -29,6 +29,8 @@ import Product from './pages/home/Product';
 import CategoryHome from './pages/category/CategoryHome';
 import SubHome from './pages/sub/SubHome';
 import Shop from './pages/shop/Shop';
+import Cart from './pages/cart/Cart';
+import SideDrawer from './components/drawer/SideDrawer';
 
 const App = () => {
   const dispatch = useDispatch()
@@ -55,13 +57,23 @@ const App = () => {
       }
     })
 
+    updateCart()
+
     // cleanup
     return () => unsubscribe()
   }, [])
 
+  const updateCart = () => {
+    const storageData = localStorage.getItem('cart')
+    if (storageData) {
+      dispatch({ type: 'ADD_TO_CART', payload: JSON.parse(storageData) })
+    }
+  }
+
   return (
     <>
       <Header />
+      <SideDrawer />
       <ToastContainer />
       <Switch>
         <Route exact path="/" component={Home} />
@@ -73,6 +85,7 @@ const App = () => {
         <Route exact path="/category/:slug" component={CategoryHome} />
         <Route exact path="/sub/:slug" component={SubHome} />
         <Route exact path="/shop" component={Shop} />
+        <Route exact path="/cart" component={Cart} />
 
         <UserRoute exact path="/user/history" component={History} />
         <UserRoute exact path="/user/password" component={Password} />
