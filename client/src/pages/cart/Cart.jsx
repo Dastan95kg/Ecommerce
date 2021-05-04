@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import ProductCardInCheckout from '../../components/cards/ProductCardInCheckout'
+import { saveUserCart } from '../../functions/cart'
 
-const Cart = () => {
+const Cart = ({ history }) => {
     const { cart, user } = useSelector(state => state)
 
     const getTotalSum = () => {
@@ -13,7 +14,15 @@ const Cart = () => {
         }, 0)
     }
 
-    const saveOrderToDb = () => { }
+    const saveOrderToDb = () => {
+        saveUserCart(cart, user.token)
+            .then(res => {
+                if (res.data.ok) {
+                    history.push('/checkout')
+                }
+            })
+            .catch(err => console.log(err))
+    }
 
     const showProducts = () => (
         <table className="table table-bordered">
