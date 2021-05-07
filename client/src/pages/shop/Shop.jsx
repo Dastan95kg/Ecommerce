@@ -15,7 +15,7 @@ const { Item, SubMenu } = Menu
 const Shop = () => {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(false)
-    const [price, setPrice] = useState([0, 0])
+    const [price, setPrice] = useState()
     const [ok, setOk] = useState(false)
     const [categories, setCategories] = useState([])
     const [selectedCategories, setSelectedCategories] = useState([])

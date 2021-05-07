@@ -1,23 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Badge, Menu } from 'antd';
 import {
     WindowsOutlined, SettingOutlined, UserOutlined,
     UserAddOutlined, LogoutOutlined, ShoppingOutlined, ShoppingCartOutlined
 } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import firebase from 'firebase';
 
 import Search from '../forms/Search';
 
-const Header = () => {
+const Header = ({ location }) => {
     const [current, setCurrent] = useState("home")
 
     const { user, cart } = useSelector(state => state)
-
     const dispatch = useDispatch()
     const history = useHistory()
+
+    useEffect(() => {
+        // update selected key for menu after reload
+        const url = location.pathname.split('/')[1]
+        setCurrent(url)
+    }, [location.pathname])
 
     const handleClick = (e) => {
         setCurrent(e.key)
@@ -37,7 +42,7 @@ const Header = () => {
     return (
         <Menu onClick={handleClick} selectedKeys={[current]} mode="horizontal">
             <Item key="home" icon={<WindowsOutlined />}>
-                <Link to="/">Home</Link>
+                <Link to="/home">Home</Link>
             </Item>
 
             <Item key="shop" icon={<ShoppingOutlined />}>
@@ -84,4 +89,4 @@ const Header = () => {
     )
 }
 
-export default Header;
+export default withRouter(Header);

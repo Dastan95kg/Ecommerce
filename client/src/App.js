@@ -32,6 +32,7 @@ import Shop from './pages/shop/Shop';
 import Cart from './pages/cart/Cart';
 import SideDrawer from './components/drawer/SideDrawer';
 import Checkout from './pages/checkout/Checkout';
+import CreateCoupon from './pages/admin/coupon/CreateCoupon';
 
 const App = () => {
   const dispatch = useDispatch()
@@ -77,7 +78,7 @@ const App = () => {
       <SideDrawer />
       <ToastContainer />
       <Switch>
-        <Route exact path="/" component={Home} />
+        <Route exact path="/home" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/register/complete" component={RegisterComplete} />
@@ -101,6 +102,7 @@ const App = () => {
         <AdminRoute exact path="/admin/product" component={ProductCreate} />
         <AdminRoute exact path="/admin/product/:slug" component={ProductUpdate} />
         <AdminRoute exact path="/admin/products" component={AllProducts} />
+        <AdminRoute exact path="/admin/coupon" component={CreateCoupon} />
       </Switch>
     </>
   )
