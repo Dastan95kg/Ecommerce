@@ -6,12 +6,15 @@ import 'react-quill/dist/quill.snow.css'
 
 import { getUserCart, emptyUserCart, saveUserAddress, applyCouponToCart } from '../../functions/cart'
 
-const Checkout = () => {
+const Checkout = ({ history }) => {
     const [products, setProducts] = useState([])
     const [cartTotal, setCartTotal] = useState(0)
     const [address, setAddress] = useState('')
     const [addressSaved, setAddressSaved] = useState(false)
     const [coupon, setCoupon] = useState('')
+    const [totalAfterDiscount, setTotalAfterDiscount] = useState(0)
+
+    console.log('totalAfterDiscount', totalAfterDiscount);
 
     const { user } = useSelector(state => state)
     const dispatch = useDispatch()
@@ -34,6 +37,9 @@ const Checkout = () => {
             type: "ADD_TO_CART",
             payload: []
         })
+        // empty coupon and discount
+        setTotalAfterDiscount(0)
+        setCoupon('')
         // remove cart from backend
         emptyUserCart(user.token)
             .then(res => {
@@ -61,11 +67,20 @@ const Checkout = () => {
             .then(res => {
                 if (res.data) {
                     toast.success("Your coupon applied!")
+                    setTotalAfterDiscount(res.data)
+                    dispatch({
+                        type: "COUPON_APPLIED",
+                        payload: true
+                    })
                 }
             })
             .catch(err => {
                 if (err.response.data) {
                     toast.error(err.response.data.err)
+                    dispatch({
+                        type: "COUPON_APPLIED",
+                        payload: false
+                    })
                 }
             })
     }
@@ -120,10 +135,17 @@ const Checkout = () => {
                 ))}
                 <hr />
                 <div className="mb-3">Cart Total: {cartTotal}</div>
+                {totalAfterDiscount > 0 && (
+                    <>
+                        <div className="bg-success p-2">Discount applied</div>
+                        <div className="bg-success p-2">Total Payable: ${totalAfterDiscount}</div>
+                    </>
+                )}
                 <div className="row">
                     <button
                         className="btn btn-primary mr-5"
                         disabled={!addressSaved || !products.length}
+                        onClick={() => history.push('/payment')}
                     >
                         Place Order
                     </button>

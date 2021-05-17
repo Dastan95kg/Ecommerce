@@ -1,0 +1,22 @@
+import React from 'react'
+
+const ShowPaymentInfo = ({ order }) => {
+    console.log(order);
+
+    return (
+        <div className="pb-3">
+            <span><b>Order id:</b> {order._id}/</span>{" "}
+            <span><b>Amount:</b> {(order.paymentIntent.amount / 100).toLocaleString('en-US', {
+                style: "currency",
+                currency: "USD"
+            })}/</span>{" "}
+            <span><b>Currency:</b> {order.paymentIntent.currency.toUpperCase()}/</span>{" "}
+            <span><b>Method:</b> {order.paymentIntent.payment_method_types[0]}/</span>{" "}
+            <span><b>Payment:</b> {order.paymentIntent.status.toUpperCase()}/</span>{" "}
+            <span><b>Ordered on:</b> {new Date(order.paymentIntent.created * 1000).toLocaleString()}/</span>{" "}
+            <span className="badge badge-primary">STATUS: {order.orderStatus}</span>
+        </div>
+    )
+}
+
+export default ShowPaymentInfo

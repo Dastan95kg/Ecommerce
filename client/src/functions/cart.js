@@ -32,3 +32,16 @@ export const applyCouponToCart = async (authtoken, coupon) =>
         { coupon },
         { headers: { authtoken } }
     )
+
+export const createOrder = async (authtoken, paymentIntent) =>
+    await axios.post(
+        `${process.env.REACT_APP_API}/user/order`,
+        { stripeResponse: paymentIntent },
+        { headers: { authtoken } }
+    )
+
+export const getOrders = async (authtoken) =>
+    await axios.get(
+        `${process.env.REACT_APP_API}/user/orders`,
+        { headers: { authtoken } }
+    )

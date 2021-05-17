@@ -2,6 +2,7 @@ const User = require('../models/user')
 const Product = require('../models/product')
 const Cart = require('../models/cart')
 const Coupon = require('../models/coupon')
+const Order = require('../models/order')
 
 exports.userCart = async (req, res) => {
     const { cart } = req.body
@@ -103,11 +104,50 @@ exports.applyCouponToUserCart = async (req, res) => {
     // calculate the total after discount
     let totalAfterDiscount = (cartTotal - (cartTotal * validCoupon.discount) / 100).toFixed(2)
 
-    Cart.findByIdAndUpdate(
+    Cart.findOneAndUpdate(
         { orderedBy: user._id },
         { totalAfterDiscount },
         { new: true }
-    )
+    ).exec()
 
     res.json(totalAfterDiscount)
+}
+
+exports.createOrder = async (req, res) => {
+    const { paymentIntent } = req.body.stripeResponse
+    const user = await User.findOne({ email: req.user.email }).exec()
+
+    let { products } = await Cart.findOne({ orderedBy: user._id }).exec()
+
+    let newOrder = await new Order({
+        products,
+        paymentIntent,
+        orderedBy: user._id
+    }).save()
+
+    // decrement quantity, increment sold
+    let bulkOption = products.map(item => {
+        return {
+            updateOne: {
+                filter: { _id: item.product._id }, // IMPORTANT item.product
+                update: { $inc: { quantity: -item.count, sold: +item.count } }
+            }
+        }
+    })
+
+    let updated = await Product.bulkWrite(bulkOption, {})
+    console.log('PRODUCT QUANTITY-- AND SOLD++', updated)
+
+    console.log("NEW ORDER SAVED", newOrder)
+    res.json({ ok: true })
+}
+
+exports.orders = async (req, res) => {
+    const user = await User.findOne({ email: req.user.email }).exec()
+
+    let userOrders = await Order.find({ orderedBy: user._id })
+        .populate('products.product')
+        .exec()
+
+    res.json(userOrders)
 }
