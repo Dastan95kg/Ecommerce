@@ -1,8 +1,6 @@
 import React from 'react'
 
-const ShowPaymentInfo = ({ order }) => {
-    console.log(order);
-
+const ShowPaymentInfo = ({ order, showStatus = true }) => {
     return (
         <div className="pb-3">
             <span><b>Order id:</b> {order._id}/</span>{" "}
@@ -14,7 +12,9 @@ const ShowPaymentInfo = ({ order }) => {
             <span><b>Method:</b> {order.paymentIntent.payment_method_types[0]}/</span>{" "}
             <span><b>Payment:</b> {order.paymentIntent.status.toUpperCase()}/</span>{" "}
             <span><b>Ordered on:</b> {new Date(order.paymentIntent.created * 1000).toLocaleString()}/</span>{" "}
-            <span className="badge badge-primary">STATUS: {order.orderStatus}</span>
+            {showStatus && (
+                <span className="badge badge-primary">STATUS: {order.orderStatus}</span>
+            )}
         </div>
     )
 }

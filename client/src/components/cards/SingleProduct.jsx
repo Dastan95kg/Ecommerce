@@ -1,17 +1,19 @@
 import React, { useState } from 'react'
 import { Card, Tabs, Tooltip } from 'antd'
-import { Link } from 'react-router-dom'
 import { HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 import { Carousel } from 'react-responsive-carousel'
 import StarRatings from 'react-star-ratings';
 import _ from 'lodash'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router'
 
 import imgPlaceholder from '../../images/placeholder.png'
 import ProductListItems from './ProductListItems'
 import RatingModal from '../modal/RatingModal'
 import showAverage from '../../functions/rating'
+import { addProductToWishlist } from '../../functions/product'
+import { toast } from 'react-toastify'
 
 const { TabPane } = Tabs
 
@@ -21,6 +23,8 @@ const SingleProduct = ({ product, onStarClick, star }) => {
     const [tooltip, setTooltip] = useState('Click to add')
 
     const dispatch = useDispatch()
+    const history = useHistory()
+    const { user } = useSelector(state => state)
 
     const handleAddToCart = () => {
         let cart = []
@@ -54,6 +58,16 @@ const SingleProduct = ({ product, onStarClick, star }) => {
                 payload: true
             })
         }
+    }
+
+    const handleAddProductToWishlist = () => {
+        addProductToWishlist(_id, user.token)
+            .then(res => {
+                if (res.data.ok) {
+                    history.push('/user/wishlist')
+                    toast.success('Added to wishlist')
+                }
+            })
     }
 
     return (
@@ -94,9 +108,9 @@ const SingleProduct = ({ product, onStarClick, star }) => {
                                 <br /> Add to Cart
                                 </a>
                         </Tooltip>,
-                        <Link to="/">
-                            <HeartOutlined className="text-info" /> Add to Wishlist
-                        </Link>,
+                        <a onClick={handleAddProductToWishlist}>
+                            <HeartOutlined className="text-info" /><br /> Add to Wishlist
+                        </a>,
                         <RatingModal>
                             <StarRatings
                                 rating={star}

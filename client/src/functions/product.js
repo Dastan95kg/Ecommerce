@@ -61,3 +61,23 @@ export const productRelated = async (productId) =>
 
 export const fetchProductsByFilter = async (obj) =>
     await axios.post(`${process.env.REACT_APP_API}/search/filters`, obj)
+
+export const addProductToWishlist = async (productId, authtoken) =>
+    await axios.post(
+        `${process.env.REACT_APP_API}/user/wishlist`,
+        { productId },
+        { headers: { authtoken } }
+    )
+
+export const getWishlist = async (authtoken) =>
+    await axios.get(
+        `${process.env.REACT_APP_API}/user/wishlist`,
+        { headers: { authtoken } }
+    )
+
+export const removeProductFromWishlist = async (productId, authtoken) =>
+    await axios.put(
+        `${process.env.REACT_APP_API}/user/wishlist/${productId}`,
+        {},
+        { headers: { authtoken } }
+    )
