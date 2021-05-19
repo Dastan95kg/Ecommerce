@@ -4,7 +4,7 @@ import { toast } from 'react-toastify'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 
-import { getUserCart, emptyUserCart, saveUserAddress, applyCouponToCart } from '../../functions/cart'
+import { getUserCart, emptyUserCart, saveUserAddress, applyCouponToCart, createCashOrder } from '../../functions/cart'
 
 const Checkout = ({ history }) => {
     const [products, setProducts] = useState([])
@@ -14,9 +14,8 @@ const Checkout = ({ history }) => {
     const [coupon, setCoupon] = useState('')
     const [totalAfterDiscount, setTotalAfterDiscount] = useState(0)
 
-    console.log('totalAfterDiscount', totalAfterDiscount);
-
-    const { user } = useSelector(state => state)
+    const { user, COD } = useSelector(state => state)
+    const couponTrueOrFalse = useSelector(state => state.coupon)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -105,6 +104,41 @@ const Checkout = ({ history }) => {
         </>
     )
 
+    const handlePlaceOrderClick = () => {
+        if (COD) {
+            createCashOrder(user.token, COD, couponTrueOrFalse)
+                .then(res => {
+                    if (res.data.ok) {
+                        // empty localStorage
+                        localStorage.removeItem('cart')
+                        // empty redux cart
+                        dispatch({
+                            type: 'ADD_TO_CART',
+                            payload: []
+                        })
+                        // empty redux COD
+                        dispatch({
+                            type: 'COD',
+                            payload: false
+                        })
+                        // empty redux coupon
+                        dispatch({
+                            type: 'COUPON_APPLIED',
+                            payload: false
+                        })
+                        // empty cart from backend
+                        emptyUserCart(user.token)
+                        // redirect to user history page with delay
+                        setTimeout(() => {
+                            history.push('/user/history')
+                        }, 1000)
+                    }
+                })
+        } else {
+            history.push('/payment')
+        }
+    }
+
     return (
         <div className="container-fluid row pt-2">
             <div className="col-md-6">
@@ -145,7 +179,7 @@ const Checkout = ({ history }) => {
                     <button
                         className="btn btn-primary mr-5"
                         disabled={!addressSaved || !products.length}
-                        onClick={() => history.push('/payment')}
+                        onClick={handlePlaceOrderClick}
                     >
                         Place Order
                     </button>

@@ -1,12 +1,13 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import ProductCardInCheckout from '../../components/cards/ProductCardInCheckout'
 import { saveUserCart } from '../../functions/cart'
 
 const Cart = ({ history }) => {
-    const { cart, user } = useSelector(state => state)
+    const { cart, user, COD } = useSelector(state => state)
+    const dispatch = useDispatch()
 
     const getTotalSum = () => {
         return cart.reduce((acc, current) => {
@@ -14,7 +15,20 @@ const Cart = ({ history }) => {
         }, 0)
     }
 
-    const saveOrderToDb = () => {
+    const saveOrderToDb = (cash = false) => {
+        console.log('CASH', cash);
+        dispatch({
+            type: 'COD',
+            payload: false
+        })
+
+        if (cash) {
+            dispatch({
+                type: 'COD',
+                payload: true
+            })
+        }
+
         saveUserCart(cart, user.token)
             .then(res => {
                 if (res.data.ok) {
@@ -71,13 +85,23 @@ const Cart = ({ history }) => {
                     <p>Total: ${getTotalSum()}</p>
                     <hr />
                     {user.token ? (
-                        <button
-                            className="btn btn-sm btn-primary mt-2"
-                            disabled={!cart.length}
-                            onClick={saveOrderToDb}
-                        >
-                            Proceed to Checkout
-                        </button>
+                        <>
+                            <button
+                                className="btn btn-sm btn-primary mt-2"
+                                disabled={!cart.length}
+                                onClick={() => saveOrderToDb()}
+                            >
+                                Proceed to Checkout
+                            </button>
+                            <br />
+                            <button
+                                className="btn btn-sm btn-warning mt-2"
+                                disabled={!cart.length}
+                                onClick={() => saveOrderToDb(true)}
+                            >
+                                Pay Cash On Delivery
+                            </button>
+                        </>
                     ) : (
                         <button className="btn btn-sm btn-primary mt-2">
                             <Link

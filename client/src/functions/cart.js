@@ -45,3 +45,10 @@ export const getOrders = async (authtoken) =>
         `${process.env.REACT_APP_API}/user/orders`,
         { headers: { authtoken } }
     )
+
+export const createCashOrder = async (authtoken, COD, coupon) =>
+    await axios.post(
+        `${process.env.REACT_APP_API}/user/cash-order`,
+        { COD, couponApplied: coupon },
+        { headers: { authtoken } }
+    )

@@ -15,7 +15,8 @@ const {
     orders,
     addToWishlist,
     wishlist,
-    removeFromWishlist
+    removeFromWishlist,
+    createCashOrder
 } = require("../controllers/user")
 
 router.post("/user/cart", authCheck, userCart) // save cart
@@ -28,6 +29,7 @@ router.post('/user/cart/coupon', authCheck, applyCouponToUserCart)
 
 // order
 router.post('/user/order', authCheck, createOrder)
+router.post('/user/cash-order', authCheck, createCashOrder) // cash order
 router.get('/user/orders', authCheck, orders)
 
 // wishlist
